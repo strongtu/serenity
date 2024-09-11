@@ -11,13 +11,7 @@ use crate::http::{CacheHttp, Http};
 use crate::internal::prelude::*;
 use crate::model::channel::ChannelType;
 use crate::model::id::{
-    ApplicationId,
-    CommandId,
-    CommandPermissionId,
-    CommandVersionId,
-    GuildId,
-    RoleId,
-    UserId,
+    ApplicationId, CommandId, CommandPermissionId, CommandVersionId, GuildId, RoleId, UserId,
 };
 use crate::model::Permissions;
 
@@ -245,6 +239,7 @@ enum_number! {
         ChatInput = 1,
         User = 2,
         Message = 3,
+        PrimaryEntryPoint = 4,
         _ => Unknown(u8),
     }
 }
@@ -433,5 +428,20 @@ impl From<CommandPermissionId> for RoleId {
 impl From<CommandPermissionId> for UserId {
     fn from(id: CommandPermissionId) -> Self {
         Self::new(id.get())
+    }
+}
+
+enum_number! {
+    /// The type of an entry point command handler type
+    ///
+    /// [Discord docs](https://discord.com/developers/docs/interactions/application-commands#application-command-object-entry-point-command-handler-types).
+    #[derive(Clone, Copy, Debug, Eq, Hash, Ord, PartialEq, PartialOrd, Deserialize, Serialize)]
+    #[cfg_attr(feature = "typesize", derive(typesize::derive::TypeSize))]
+    #[serde(from = "u8", into = "u8")]
+    #[non_exhaustive]
+    pub enum CommandHandlerType {
+        AppHandler = 1,
+        DiscordLaunchActivity = 2,
+        _ => Unknown(u8),
     }
 }

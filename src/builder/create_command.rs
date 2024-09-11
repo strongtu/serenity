@@ -320,6 +320,9 @@ pub struct CreateCommand {
     #[serde(skip_serializing_if = "Option::is_none")]
     contexts: Option<Vec<InteractionContext>>,
     nsfw: bool,
+    #[cfg(feature = "unstable_discord_api")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    handler: Option<CommandHandlerType>,
 }
 
 impl CreateCommand {
@@ -339,6 +342,8 @@ impl CreateCommand {
             integration_types: None,
             #[cfg(feature = "unstable_discord_api")]
             contexts: None,
+            #[cfg(feature = "unstable_discord_api")]
+            handler: None,
 
             options: Vec::new(),
             nsfw: false,
@@ -461,6 +466,12 @@ impl CreateCommand {
     /// Whether this command is marked NSFW (age-restricted)
     pub fn nsfw(mut self, nsfw: bool) -> Self {
         self.nsfw = nsfw;
+        self
+    }
+
+    #[cfg(feature = "unstable_discord_api")]
+    pub fn handler(mut self, handler: CommandHandlerType) -> Self {
+        self.handler = Some(handler);
         self
     }
 }
